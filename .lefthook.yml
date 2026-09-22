@@ -1,0 +1,20 @@
+# lefthook — the single git-hook manager (one truth).
+# Owns WHEN checks run. The commands themselves live in Taskfile.yml and
+# package.json scripts. Install with: lefthook install
+
+pre-commit:
+  parallel: true
+  commands:
+    backend-vet:
+      root: backend/
+      run: go vet ./...
+    backend-fmt:
+      run: task be:fmt:check
+    frontend-lint:
+      root: frontend/
+      run: pnpm lint
+
+pre-push:
+  commands:
+    full-verify:
+      run: task be:verify fe:verify

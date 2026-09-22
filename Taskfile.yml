@@ -1,0 +1,100 @@
+# VGStock monorepo task runner (go-task). Run `task` or `task verify` at the root.
+# Taskfile owns WHAT commands to run. lefthook owns WHEN (pre-commit/pre-push).
+# CI (.github/workflows/ci.yml) runs the same checks in the cloud.
+
+version: "3"
+
+tasks:
+  default:
+    desc: Verify everything (lint + test + build) for all stacks
+    cmds:
+      - task: be:verify
+      - task: fe:verify
+
+  # ---------------------------------------------------------------- Backend (Go)
+
+  be:lint:
+    desc: Vet + gofmt check for the Go backend
+    dir: backend
+    deps:
+      - be:fmt:check
+    cmds:
+      - go vet ./...
+
+  be:fmt:
+    desc: Auto-format Go code
+    dir: backend
+    cmds:
+      - gofmt -w .
+
+  be:fmt:check:
+    desc: Fail if any Go file is unformatted
+    dir: backend
+    cmds:
+      - cmd: "powershell -NoProfile -Command '& { $r = gofmt -l .; if ($r) { Write-Output ''Unformatted files:''; $r; exit 1 } }'"
+
+  be:test:
+    desc: Run Go tests
+    dir: backend
+    cmds:
+      - go test ./...
+
+  be:test:race:
+    desc: Run Go tests with the race detector
+    dir: backend
+    cmds:
+      - go test -race ./...
+
+  be:build:
+    desc: Compile the vgstock server binary to bin/vgstock
+    dir: backend
+    cmds:
+      - cmd: "powershell -NoProfile -Command 'New-Item -ItemType Directory -Force -Path bin | Out-Null'"
+      - go build -o bin/vgstock ./cmd/vgstock
+
+  be:verify:
+    desc: lint + test + build for the Go backend
+    deps:
+      - be:lint
+      - be:test
+    cmds:
+      - task: be:build
+
+  be:tidy:
+    desc: Tidy Go module dependencies
+    dir: backend
+    cmds:
+      - go mod tidy
+
+  be:run:
+    desc: Run the vgstock server locally (pass args via -- )
+    dir: backend
+    cmds:
+      - go run ./cmd/vgstock {{.CLI_ARGS}}
+
+  be:dev:
+    desc: Run with auto-reload on file changes (gow watch mode)
+    dir: backend
+    cmds:
+      - gow -c run ./cmd/vgstock
+
+  # ---------------------------------------------------------------- Frontend (Next.js)
+
+  fe:lint:
+    desc: ESLint the frontend
+    dir: frontend
+    cmds:
+      - pnpm lint
+
+  fe:build:
+    desc: Production build of the frontend
+    dir: frontend
+    cmds:
+      - pnpm build
+
+  fe:verify:
+    desc: lint + build for the frontend
+    deps:
+      - fe:lint
+    cmds:
+      - task: fe:build
