@@ -20,6 +20,12 @@ VGStock/
 └── (more to come)
 ```
 
+## Documentation
+
+- [Contributing](CONTRIBUTING.md)
+- [Code of Conduct](CODE_OF_CONDUCT.md)
+- [Security](SECURITY.md)
+
 ## License
 
 Proprietary. All rights reserved. See [LICENSE](LICENSE).

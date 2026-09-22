@@ -11,7 +11,29 @@ tasks:
       - task: be:verify
       - task: fe:verify
 
-  # ---------------------------------------------------------------- Backend (Go)
+  format:
+    desc: Auto-format code in all stacks (used by checkpoint.sh)
+    cmds:
+      - task: be:fmt
+
+  check:
+    desc: Validate all stacks without building - lint + test (used by checkpoint.sh)
+    cmds:
+      - task: be:lint
+      - task: be:test
+      - task: fe:lint
+
+  checkpoint:
+    desc: Format, validate, and create a Git commit
+    cmds:
+      - bash ./scripts/checkpoint.sh
+
+  start:
+    desc: Sync main and create a new feature branch
+    cmds:
+      - bash ./scripts/start.sh {{.CLI_ARGS}}
+
+  # Backend (Go)
 
   be:lint:
     desc: Vet + gofmt check for the Go backend
@@ -78,7 +100,7 @@ tasks:
     cmds:
       - gow -c run ./cmd/vgstock
 
-  # ---------------------------------------------------------------- Frontend (Next.js)
+  # Frontend (Next.js)
 
   fe:lint:
     desc: ESLint the frontend

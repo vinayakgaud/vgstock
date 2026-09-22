@@ -21,3 +21,6 @@ decision, reason. Append, never rewrite history.
 | 12 | Go entrypoint layout | `backend/cmd/vgstock/` (binary named after product) | `cmd/api` felt vague/"just an API"; product entrypoint carries the brand; future tools get their own `cmd/<name>` |
 | 13 | Go bootstrap Taskfile commands | Adopted from prior project, Windows-safe: fmt/fmt:check/test/test:race/build/run/tidy | `gofmt -l` alone exits 0 (decorative); real check must fail on unformatted. Local shell is cmd, so checks wrap PowerShell explicitly |
 | 14 | HTTP router | Go 1.22+ stdlib `http.ServeMux`, zero web deps | Health route + few endpoints don't justify a dep; chi (or others) sits on net/http so migration later is an afternoon, not a rewrite. Revisit when route/middleware composition hurts |
+| 15 | Dev hot-reload | `gow` (mitranim/gow), task `be:dev` | Zero-config nodemon-like watch for `go run`; `air` is the heavier alternative with `.toml` config |
+| 16 | Task prefix naming | `be:*` / `fe:*` (not `backend:*`/`frontend:*`) | Short words; decided on user request |
+| 17 | Health endpoint path | `/health` (not `/healthz`) | User's choice over the Google convention; `GET` method-bound |
