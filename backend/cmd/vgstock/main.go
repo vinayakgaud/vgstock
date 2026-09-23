@@ -17,7 +17,7 @@ func main() {
 	}
 	port := cfg.Port
 	if port == "" {
-		port = "8081"
+		port = "8080"
 	}
 	if !strings.HasPrefix(port, ":") {
 		port = ":" + port

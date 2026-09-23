@@ -15,6 +15,7 @@ tasks:
     desc: Auto-format code in all stacks (used by checkpoint.sh)
     cmds:
       - task: be:fmt
+      - task: fe:fmt
 
   check:
     desc: Validate all stacks without building - lint + test (used by checkpoint.sh)
@@ -22,6 +23,7 @@ tasks:
       - task: be:lint
       - task: be:test
       - task: fe:lint
+      - task: fe:fmt:check
 
   checkpoint:
     desc: Format, validate, and create a Git commit
@@ -108,6 +110,18 @@ tasks:
     cmds:
       - pnpm lint
 
+  fe:fmt:
+    desc: Auto-format frontend files with Prettier
+    dir: frontend
+    cmds:
+      - pnpm fmt
+
+  fe:fmt:check:
+    desc: Fail if any frontend file is not Prettier-formatted
+    dir: frontend
+    cmds:
+      - pnpm fmt:check
+
   fe:build:
     desc: Production build of the frontend
     dir: frontend
@@ -115,8 +129,9 @@ tasks:
       - pnpm build
 
   fe:verify:
-    desc: lint + build for the frontend
+    desc: lint + fmt check + build for the frontend
     deps:
       - fe:lint
+      - fe:fmt:check
     cmds:
       - task: fe:build

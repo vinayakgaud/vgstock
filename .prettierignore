@@ -1,0 +1,22 @@
+# Build output
+frontend/.next/
+frontend/out/
+frontend/.vercel/
+frontend/node_modules/
+
+# Package manager artifacts
+**/pnpm-lock.yaml
+
+# Generated
+frontend/next-env.d.ts
+
+# Non-Prettier stacks (own formatters: gofmt, ruff)
+backend/
+ml/
+
+# Misc
+*.log
+coverage/
+dist/
+tmp/
+data/

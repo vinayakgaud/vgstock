@@ -13,6 +13,9 @@ pre-commit:
     frontend-lint:
       root: frontend/
       run: pnpm lint
+    frontend-fmt:
+      root: frontend/
+      run: pnpm fmt:check
 
 pre-push:
   commands:
